@@ -38,9 +38,9 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 <h4 align="center"> ✅ Contribuição </h4>
 
-- LUCIANO SABINO DA SILVA NETO [GitHub]()
-- LUIZ HENRIQUE DOS SANTOS BARBOSA [GitHub]()
-- GABRIEL PIMENTEL DOS SANTOS SANTANA [GitHub]()
+- LUCIANO SABINO DA SILVA NETO [GitHub](https://github.com/LucianoSabino)
+- LUIZ HENRIQUE DOS SANTOS BARBOSA [GitHub](https://github.com/luizhbarbosa)
+- GABRIEL PIMENTEL DOS SANTOS SANTANA [GitHub](https://github.com/GabrielPimentelss)
 - DIEGO VINICIUS SILVA MOREIRA [GitHub]()
 
 <h4 align="center"> 
