@@ -86,6 +86,8 @@ class Pedido:
         print(str_line, end='\n')
         
         if self._endereco_entrega:  # Se houver endereço
+            str_line = "NOME DO CLIENTE:" + str(self._endereco_entrega._nome)
+            print(str_line, end='\t')
             str_line = "CEP ENDEREÇO PARA ENTREGA:" + str(self._endereco_entrega._cep)
             print(str_line, end='\t')
             str_line = "RUA:" + str(self._endereco_entrega._rua)
@@ -93,6 +95,8 @@ class Pedido:
             str_line = "BAIRRO/CIDADE PARA ENTREGA:" + str(self._endereco_entrega._bairro) + "/" + str(self._endereco_entrega._cidade)
             print(str_line, end='\n')
             str_line = "ID DO ATENDENTE:" + str(self.id_funcionario)
+            print(str_line, end='\n')
+            str_line = "ENTREGADOR RESPONSAVEL:" + str(self._endereco_entrega._nome_entregador)
             print(str_line, end='\n')
         else:  # Caso tenha número de mesa
             str_line = "NÚMERO DA MESA:" + str(self._numero_mesa)

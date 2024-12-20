@@ -6,6 +6,7 @@ from class_nota_fiscal import NotaFiscal
 from class_funcionario import Funcionario
 from class_antendete import Atendente
 from class_garçom import Garcom
+from class_entregador import Entregador
 from datetime import datetime
 # from incializador import garcons
 def menu_principal():  # MENU PRINCIPAL
@@ -21,11 +22,21 @@ def menu_principal():  # MENU PRINCIPAL
     return str(input('Escolha uma opção: '))
 
 def Cadastrar_novo_funcionario():
-    opcao_escolhida = int(input("[1] - garçon\n[2] - atendente\n"))
+    opcao_escolhida = int(input("[1] - Garçon\n[2] - Atendente\n[3] - Entregador\n"))
     if(opcao_escolhida == 1):
        criar_garcom()
     if(opcao_escolhida == 2):
         criar_atendente()
+    if(opcao_escolhida == 3):
+        criar_entregador()
+    
+
+def criar_entregador():
+    str_nome = str(input('Digite o nome do entregador'))
+    id = len(entregadors) + 1
+    entregador = Entregador(str_nome, id)
+    entregadors.append(entregador)
+    return Entregador(str_nome, id)
 
 # Função para criar um Garçom
 def criar_garcom():
@@ -89,11 +100,21 @@ def buscar_garcom_por_id(int_id_atendente):
     return None  # Caso não encontre o atendente
 
 
+def buscar_entregador_por_id(int_id_entregador):
+    # Verifica se o id está dentro do intervalo válido e se existe na lista
+    if 0 < int_id_entregador <= len(entregadors):  # Verifica o ID dentro do intervalo válido
+        for entregador in entregadors:
+            if entregador.id == int_id_entregador:
+                return entregador.nome
+    return None  # Caso não encontre o atendente
+
+
 def pedido_adicionar():
     opcao_escolhida = int(input("[1] - Mesa [2] - Delivery: "))
     
     if opcao_escolhida == 2:  # Delivery
         int_id_atendente = int(input("Infomer qual o atendente!"))
+        
 
         if buscar_atendente_por_id(int_id_atendente):
 
@@ -179,16 +200,22 @@ def pedido_listar_items():
         return False
     
 def cadastrar_endereco():
-    str_cep = str(input('Informe o cep do endereço: '))
-    str_rua = str(input('Informe a rua: '))
-    int_num = int(input('Informe o número: '))
-    str_complemento = str(input('Informe o complemento do endereço: '))
-    str_bairro = str(input('Informe o bairro: '))
-    str_cidade = str(input('Informe a cidade: '))
-    endereco = Endereco(str_cep, str_rua, int_num,
-                        str_complemento, str_bairro, str_cidade)
-    return endereco
+    int_id_entregador = int(input("Informe qual é o entregador"))
+    entrega = buscar_entregador_por_id(int_id_entregador)
+    if entrega:
 
+        str_nome = str(input("Infome o nome do cliente:"))
+        str_cep = str(input('Informe o cep do endereço: '))
+        str_rua = str(input('Informe a rua: '))
+        int_num = int(input('Informe o número de telefone: '))
+        str_complemento = str(input('Informe o complemento do endereço: '))
+        str_bairro = str(input('Informe o bairro: '))
+        str_cidade = str(input('Informe a cidade: '))
+        endereco = Endereco(str_nome, str_cep, str_rua, int_num,
+                            str_complemento, str_bairro, str_cidade, entrega)
+        return endereco
+    else:
+        print("Erro: Entregador")
 def cadastrar_produto():
     int_codigo = int(input('Informe o código identificador do produto: '))
     str_nome = str(input('Qual o nome/descrição do produto? '))
@@ -234,6 +261,7 @@ estoque_produtos = {}
 pedidos = {}
 atendente = []
 garcons = []
+entregadors = []
 while True:
     # menu_principal
     opcao_escolhida = menu_principal()
