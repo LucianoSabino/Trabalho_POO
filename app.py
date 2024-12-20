@@ -42,15 +42,21 @@ def pedido_adicionar_item():
     if buscar_pedido_por_codigo(int_pedido_selecionado):
         # verificar se pedido existe
         pedido = pedidos[int_pedido_selecionado]
-        int_codigo_produto = int(input('Informe o código do produto para adicionar ao pedido: '))
-        produto = buscar_produto_por_codigo(int_codigo_produto)
-        if produto:
-            int_quantidade_item = int(input('Informe a quantidade do item:'))
-            novo_item_pedido = ItemPedido(produto, int_quantidade_item)
-            pedido.adicionar_item_ao_pedido(novo_item_pedido)
+        if pedido.status == 0:
+            
+            int_codigo_produto = int(input('Informe o código do produto para adicionar ao pedido: '))
+            produto = buscar_produto_por_codigo(int_codigo_produto)
+            if produto:
+                int_quantidade_item = int(input('Informe a quantidade do item:'))
+                novo_item_pedido = ItemPedido(produto, int_quantidade_item)
+                pedido.adicionar_item_ao_pedido(novo_item_pedido)
+            else:
+                print("Não foi possível adicionar este produto, pois o código do produto não existe!")
+            #return Pedido(codido_pedido, endereco_pedido)
         else:
-            print("Não foi possível adicionar este produto, pois o código do produto não existe!")
-        #return Pedido(codido_pedido, endereco_pedido)
+            print('Pedido já finalizado!, não pode ser adicinar nem um item')
+            pedido.status = 1 
+            
     else:
         print("Pedido inexistente")
         return False
@@ -60,10 +66,14 @@ def pedido_remover_item():
     if buscar_pedido_por_codigo(int_pedido_selecionado):
         # verificar se pedido existe
         pedido = pedidos[int_pedido_selecionado]
-        int_codigo_item = int(input('Informe o número do item para remover deste pedido ' + str(pedido._codigo_pedido) + ': '))
-        # verifica se número intem informado existe: não faz sentido remover item 5 se ele não existe
-        #if pedido.quantidade_itens_pedido() <= int_codigo_item:
-        pedido.remover_item_pedido(int_codigo_item)
+        if pedido.status == 0:
+            int_codigo_item = int(input('Informe o número do item para remover deste pedido ' + str(pedido._codigo_pedido) + ': '))
+            # verifica se número intem informado existe: não faz sentido remover item 5 se ele não existe
+            #if pedido.quantidade_itens_pedido() <= int_codigo_item:
+            pedido.remover_item_pedido(int_codigo_item)
+        else:
+            print("Pedido Finalizado!, não pode ser removido nem um item")
+            pedido.status = 1
     else:
         print("Pedido inexistente")
         return False
@@ -88,6 +98,17 @@ def cadastrar_endereco():
     endereco = Endereco(str_cep, str_rua, int_num,
                         str_complemento, str_bairro, str_cidade)
     return endereco
+
+def finalizar_pedido():
+    int_pedido_selecionado = int(input('Informe o código do pedido vc deseja finalizar: '))
+    if buscar_pedido_por_codigo(int_pedido_selecionado):
+        pedido = pedidos[int_pedido_selecionado]
+        pedido.status = 1
+        # del pedidos[int_pedido_selecionado]
+        # print("Pedido deletado!")
+        print("Pedido finalizado!")
+
+
 
 def cadastrar_produto():
     int_codigo = int(input('Informe o código identificador do produto: '))
@@ -149,7 +170,7 @@ while True:
             elif (opcao_escolhida == "4"):
                 pedido_listar_items()
             elif (opcao_escolhida == "5"):
-                pedido.status = 1
+                finalizar_pedido()
             else:
                 # Volta para o menu principal
                 break
