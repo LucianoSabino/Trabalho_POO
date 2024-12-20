@@ -3,10 +3,11 @@ from class_item_pedido import ItemPedido
 from class_pedido import Pedido
 from class_produto import Produto
 from class_nota_fiscal import NotaFiscal
-
-
+from class_funcionario import Funcionario
+from class_antendete import Atendente
+from class_garçom import Garcom
 from datetime import datetime
-
+from incializador import garcons
 def menu_principal():  # MENU PRINCIPAL
     print('''
         MENU Principal:
@@ -14,9 +15,31 @@ def menu_principal():  # MENU PRINCIPAL
         [2] - Cadastrar novo produto
         [3] - Remover um produto
         [4] - Pesquisar um produto
+        [5] - Cadastrar novo funcionario
         [s] - Sair
     ''')
     return str(input('Escolha uma opção: '))
+
+def Cadastrar_novo_funcionario():
+    opcao_escolhida = int(input("[1] - garçon\n[2] - atendente\n5"))
+    if(opcao_escolhida == 1):
+       garcons.append(criar_garcom())
+    if(opcao_escolhida == 2):
+        atendente.append(criar_garcom())
+
+# Função para criar um Garçom
+def criar_garcom():
+    nome = input("Digite o nome do garçom: ")
+    id = int(input("Digite o ID do garçom: "))
+    n_mesa = input("Digite os números das mesas que pode ser atendida (separados por vírgula): ")
+    n_mesa = [int(x) for x in n_mesa.split(',')]  # Convertendo para lista de números inteiros
+    return Garcom(nome, id, n_mesa)
+
+# Função para criar um Atendente
+def criar_atendente():
+    nome = input("Digite o nome do atendente: ")
+    id = int(input("Digite o ID do atendente: "))
+    return Atendente(nome, id)
 
 def menu_pedido():
     print('''
@@ -30,12 +53,38 @@ def menu_pedido():
     ''')
     return str(input('Escolha uma opção: '))
 
+def buscar_garcom_para_mesa(numero_mesa):
+    for i in range(len(garcons)):
+        # Verifica se n_mesa é uma lista e se contém o numero_mesa
+        if isinstance(garcons[i].n_mesa, list):
+            for j in range(len(garcons[i].n_mesa)):
+                if (garcons[i].n_mesa[j] == numero_mesa):
+                    print(garcons[i].id)
+                    return garcons[i].id
+        # Caso n_mesa seja um único número, verificamos diretamente
+        elif garcons[i].n_mesa == numero_mesa:
+            return garcons[i].id
+
+    return None  # Caso não encontre nenhum garçom para a mesa
+
+
 def pedido_adicionar():
-    # código pedido gerado automaticamente
-    endereco_pedido = cadastrar_endereco()
-    # a numeração do pedido começa de 1 até n
-    codido_pedido = int(len(pedidos)) + 1
-    return Pedido(codido_pedido, endereco_pedido)
+    opcao_escolhida = int(input("[1] - Mesa [2] - Delivery: "))
+    
+    if opcao_escolhida == 2:  # Delivery
+        endereco = cadastrar_endereco()  # Cadastra o endereço
+        codigo_pedido = len(pedidos) + 1  # Gera o código do pedido
+        pedido = Pedido(codigo_pedido, endereco_entrega=endereco)  # Cria um pedido de entrega
+        return pedido
+    
+    elif opcao_escolhida == 1:  # Mesa
+        numero_mesa = int(input("Digite o número da mesa: "))
+        id = buscar_garcom_para_mesa(numero_mesa)
+        print(id)
+        codigo_pedido = len(pedidos) + 1  # Gera o código do pedido
+        pedido = Pedido(codigo_pedido, numero_mesa=numero_mesa, id_garcom=id)  # Cria um pedido de mesa
+        return pedido
+
 
 def pedido_adicionar_item():
     int_pedido_selecionado = int(input('Informe o código do pedido para adicionar um novo item: '))
@@ -123,7 +172,7 @@ def buscar_pedido_por_codigo(int_codigo_pedido):
 
 estoque_produtos = {}
 pedidos = {}
-
+atendente = []
 while True:
     # menu_principal
     opcao_escolhida = menu_principal()
@@ -175,5 +224,7 @@ while True:
             print(">Validade=" + str(produto_pesquisa._validade))
         else:
             print("Produto nâo cadastrado/encontrado.")
+    elif (opcao_escolhida == "5"):
+        Cadastrar_novo_funcionario()
     else:
         print("A opção escolhida é inválida.")
