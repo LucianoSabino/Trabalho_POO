@@ -26,9 +26,9 @@ Tema e regras de negócio da empresa contratante do serviço.
 > Neste restaurante, quando uma nota é emitida, o gerente ordena que o responsável por guardar os automóveis coloque o automóvel do cliente disponível na portaria dorestaurante.
 Os pedidos de bebida, neste restaurante, conforme a prática da casa, são atendidos juntamente com os pedidos de pratos correspondentes, exceto quando o cliente desejar de forma diferente. As bebidas são servidas por garçons que só servem bebidas e não coletam.
 
-### Diagrama do projeto
+### Diagrama do projeto do projeto
 
-![Diagrama do projeto](URL_da_Imagem)
+![Diagrama do projeto](https://github.com/LucianoSabino/Trabalho_POO/blob/main/img/diagrama.PNG?raw=true)
 
 ### 🛠 Tecnologias
 
@@ -36,7 +36,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 - [Python](https://www.python.org/downloads/)
 
-<h4 align="center"> ✅ Contribuição </h4>
+<h4 align="center"> ✅ Compomentes do grupo ✅ </h4>
 
 - LUCIANO SABINO DA SILVA NETO [GitHub](https://github.com/LucianoSabino)
 - LUIZ HENRIQUE DOS SANTOS BARBOSA [GitHub](https://github.com/luizhbarbosa)
