@@ -2,12 +2,12 @@ from class_nota_fiscal import NotaFiscal
 
 class Pedido:
     # Definição do construtor original com endereço e id_garcom
-    def __init__(self, codigo_pedido, endereco_entrega=None, numero_mesa=None, id_garcom=None):
+    def __init__(self, codigo_pedido, endereco_entrega=None, numero_mesa=None, id_funcionario=None):
         self.__codigo_pedido = codigo_pedido
         self.__endereco_entrega = endereco_entrega  # Pode ser None se número da mesa for fornecido
         self.__numero_mesa = numero_mesa  # Número da mesa, caso fornecido
         self.__status = 0  # 0 = aberto, 1 = finalizado/pago
-        self.__id_garcom = id_garcom  # Novo atributo id_garcom, inicializado como None
+        self.__id_funcionario = id_funcionario  # Novo atributo id_garcom, inicializado como None
         # Criando uma estrutura para armazenar itens do pedido
         self.__itens_pedidos = []
 
@@ -39,6 +39,8 @@ class Pedido:
     def _endereco_entrega(self, value):
         self.__endereco_entrega = value
 
+# ------------------------------------------------------------------Parte da mesa----------------------------------------------------------------------------
+
     @property
     def _numero_mesa(self):
         return self.__numero_mesa
@@ -46,6 +48,8 @@ class Pedido:
     @_numero_mesa.setter
     def _numero_mesa(self, value):
         self.__numero_mesa = value
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @property
     def _itens_pedidos(self):
@@ -57,12 +61,12 @@ class Pedido:
 
     # Adicionando o getter e setter para o atributo id_garcom
     @property
-    def id_garcom(self):
-        return self.__id_garcom
+    def id_funcionario(self):
+        return self.__id_funcionario
 
-    @id_garcom.setter
-    def id_garcom(self, value):
-        self.__id_garcom = value
+    @id_funcionario.setter
+    def id_funcionario(self, value):
+        self.__id_funcionario = value
 
     def adicionar_item_ao_pedido(self, itempedido):
         self.__itens_pedidos.append(itempedido)
@@ -88,10 +92,12 @@ class Pedido:
             print(str_line, end='\t')
             str_line = "BAIRRO/CIDADE PARA ENTREGA:" + str(self._endereco_entrega._bairro) + "/" + str(self._endereco_entrega._cidade)
             print(str_line, end='\n')
+            str_line = "ID DO ATENDENTE:" + str(self.id_funcionario)
+            print(str_line, end='\n')
         else:  # Caso tenha número de mesa
             str_line = "NÚMERO DA MESA:" + str(self._numero_mesa)
             print(str_line, end='\n')
-            str_line = "ID DO GARÇOM:" + str(self.id_garcom)
+            str_line = "ID DO GARÇOM:" + str(self.id_funcionario)
             print(str_line, end='\n')
 
         str_line = "QUANTIDADE DE ITENS DO PEDIDO:" + str(self.quantidade_itens_pedido())

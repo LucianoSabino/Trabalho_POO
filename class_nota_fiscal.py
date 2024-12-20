@@ -2,11 +2,13 @@ class NotaFiscal:
     def __init__(self, pedido):
         self.codigo_pedido = pedido._codigo_pedido
         self.itens = pedido._itens_pedidos
+        self.id_funcionario = pedido.id_funcionario
         self.total = sum(item._preco_item for item in pedido._itens_pedidos)
 
     def gerar_nota(self):
         print("\n********** NOTA FISCAL **********")
         print(f"CÓDIGO DO PEDIDO: {self.codigo_pedido}")
+        print(f"PEDIDO REALIZADO PELO FUNCIONARIO: {self.id_funcionario}")
         print("ITENS DO PEDIDO:")
         for i, item in enumerate(self.itens):
             print(f"  {i + 1}. Produto: {item._produto._descricao}")

@@ -7,7 +7,7 @@ from class_funcionario import Funcionario
 from class_antendete import Atendente
 from class_garçom import Garcom
 from datetime import datetime
-from incializador import garcons
+# from incializador import garcons
 def menu_principal():  # MENU PRINCIPAL
     print('''
         MENU Principal:
@@ -21,25 +21,29 @@ def menu_principal():  # MENU PRINCIPAL
     return str(input('Escolha uma opção: '))
 
 def Cadastrar_novo_funcionario():
-    opcao_escolhida = int(input("[1] - garçon\n[2] - atendente\n5"))
+    opcao_escolhida = int(input("[1] - garçon\n[2] - atendente\n"))
     if(opcao_escolhida == 1):
-       garcons.append(criar_garcom())
+       criar_garcom()
     if(opcao_escolhida == 2):
-        atendente.append(criar_garcom())
+        criar_atendente()
 
 # Função para criar um Garçom
 def criar_garcom():
     nome = input("Digite o nome do garçom: ")
-    id = int(input("Digite o ID do garçom: "))
+    id = len(garcons) + 1
     n_mesa = input("Digite os números das mesas que pode ser atendida (separados por vírgula): ")
     n_mesa = [int(x) for x in n_mesa.split(',')]  # Convertendo para lista de números inteiros
+    garcom = Garcom(nome, id, n_mesa)
+    garcons.append(garcom)
     return Garcom(nome, id, n_mesa)
 
 # Função para criar um Atendente
 def criar_atendente():
     nome = input("Digite o nome do atendente: ")
-    id = int(input("Digite o ID do atendente: "))
-    return Atendente(nome, id)
+    id = len(atendente) + 1
+    atendentes = Atendente(nome, id)
+    atendente.append(atendentes)
+    return 
 
 def menu_pedido():
     print('''
@@ -67,23 +71,60 @@ def buscar_garcom_para_mesa(numero_mesa):
 
     return None  # Caso não encontre nenhum garçom para a mesa
 
+def buscar_atendente_por_id(int_id_atendente):
+    # Verifica se o id está dentro do intervalo válido e se existe na lista
+    if 0 < int_id_atendente <= len(atendente):  # Verifica o ID dentro do intervalo válido
+        for atendent in atendente:
+            if atendent.id == int_id_atendente:
+                return atendent
+    return None  # Caso não encontre o atendente
+
+
+def buscar_garcom_por_id(int_id_atendente):
+    # Verifica se o id está dentro do intervalo válido e se existe na lista
+    if 0 < int_id_atendente <= len(atendente):  # Verifica o ID dentro do intervalo válido
+        for atendent in atendente:
+            if atendent.id == int_id_atendente:
+                return atendent
+    return None  # Caso não encontre o atendente
+
 
 def pedido_adicionar():
     opcao_escolhida = int(input("[1] - Mesa [2] - Delivery: "))
     
     if opcao_escolhida == 2:  # Delivery
-        endereco = cadastrar_endereco()  # Cadastra o endereço
-        codigo_pedido = len(pedidos) + 1  # Gera o código do pedido
-        pedido = Pedido(codigo_pedido, endereco_entrega=endereco)  # Cria um pedido de entrega
-        return pedido
+        int_id_atendente = int(input("Infomer qual o atendente!"))
+
+        if buscar_atendente_por_id(int_id_atendente):
+
+            endereco = cadastrar_endereco()  # Cadastra o endereço
+            codigo_pedido = len(pedidos) + 1  # Gera o código do pedido
+            pedido = Pedido(codigo_pedido, endereco_entrega=endereco, id_funcionario=int_id_atendente)  # Cria um pedido de entrega
+            return pedido
+        else:
+            print("Atendente não encontrado")
     
     elif opcao_escolhida == 1:  # Mesa
-        numero_mesa = int(input("Digite o número da mesa: "))
-        id = buscar_garcom_para_mesa(numero_mesa)
-        print(id)
-        codigo_pedido = len(pedidos) + 1  # Gera o código do pedido
-        pedido = Pedido(codigo_pedido, numero_mesa=numero_mesa, id_garcom=id)  # Cria um pedido de mesa
-        return pedido
+        int_pedido_selecionado = int(input("Digite o número da mesa: "))
+
+        if len(garcons):
+            for garcon in garcons:
+                if int_pedido_selecionado in garcon.n_mesa:
+                    if buscar_pedido_por_codigo(int_pedido_selecionado):
+                        print("Mesa ja ocupada!")
+                        pedido = pedidos[int_pedido_selecionado]
+                        pedido.toString()
+                    else:
+                        id = buscar_garcom_para_mesa(int_pedido_selecionado)
+                        print(id)
+                        codigo_pedido = len(pedidos) + 1  # Gera o código do pedido
+                        pedido = Pedido(codigo_pedido, numero_mesa=int_pedido_selecionado, id_funcionario=id)  # Cria um pedido de mesa
+                        return pedido
+                else:
+                    print('Erro: Nem um garçom está atendendo essa mesa!')
+        else:
+            print('Erro: Nem um garçom cadastrado')
+        
 
 
 def pedido_adicionar_item():
@@ -91,31 +132,41 @@ def pedido_adicionar_item():
     if buscar_pedido_por_codigo(int_pedido_selecionado):
         # verificar se pedido existe
         pedido = pedidos[int_pedido_selecionado]
-        int_codigo_produto = int(input('Informe o código do produto para adicionar ao pedido: '))
-        produto = buscar_produto_por_codigo(int_codigo_produto)
-        if produto:
-            int_quantidade_item = int(input('Informe a quantidade do item:'))
-            novo_item_pedido = ItemPedido(produto, int_quantidade_item)
-            pedido.adicionar_item_ao_pedido(novo_item_pedido)
+        if pedido.status == 0:
+            
+            int_codigo_produto = int(input('Informe o código do produto para adicionar ao pedido: '))
+            produto = buscar_produto_por_codigo(int_codigo_produto)
+            if produto:
+                int_quantidade_item = int(input('Informe a quantidade do item:'))
+                novo_item_pedido = ItemPedido(produto, int_quantidade_item)
+                pedido.adicionar_item_ao_pedido(novo_item_pedido)
+            else:
+                print("Não foi possível adicionar este produto, pois o código do produto não existe!")
+            #return Pedido(codido_pedido, endereco_pedido)
         else:
-            print("Não foi possível adicionar este produto, pois o código do produto não existe!")
-        #return Pedido(codido_pedido, endereco_pedido)
+            print('Pedido já finalizado!, não pode ser adicinar nem um item')
+            pedido.status = 1 
+            
     else:
         print("Pedido inexistente")
         return False
     
 def pedido_remover_item():
-    int_pedido_selecionado = int(input('Informe o código do pedido para remover um item selecionado: '))
-    if buscar_pedido_por_codigo(int_pedido_selecionado):
+        int_pedido_selecionado = int(input('Informe o código do pedido para remover um item selecionado: '))
+        if buscar_pedido_por_codigo(int_pedido_selecionado):
         # verificar se pedido existe
-        pedido = pedidos[int_pedido_selecionado]
-        int_codigo_item = int(input('Informe o número do item para remover deste pedido ' + str(pedido._codigo_pedido) + ': '))
-        # verifica se número intem informado existe: não faz sentido remover item 5 se ele não existe
-        #if pedido.quantidade_itens_pedido() <= int_codigo_item:
-        pedido.remover_item_pedido(int_codigo_item)
-    else:
-        print("Pedido inexistente")
-        return False
+            pedido = pedidos[int_pedido_selecionado]
+            if pedido.status == 0:
+                int_codigo_item = int(input('Informe o número do item para remover deste pedido ' + str(pedido._codigo_pedido) + ': '))
+                # verifica se número intem informado existe: não faz sentido remover item 5 se ele não existe
+                #if pedido.quantidade_itens_pedido() <= int_codigo_item:
+                pedido.remover_item_pedido(int_codigo_item)
+            else:
+                print("Pedido Finalizado!, não pode ser removido nem um item")
+                pedido.status = 1
+        else:
+            print("Pedido inexistente")
+            return False
     
 def pedido_listar_items():
     int_pedido_selecionado = int(input('Informe o código do pedido para mais detalhes: '))
@@ -166,6 +217,15 @@ def buscar_pedido_por_codigo(int_codigo_pedido):
             return pedidos[int_codigo_pedido]
     return False
 
+def finalizar_pedido():
+    int_pedido_selecionado = int(input('Informe o código do pedido vc deseja finalizar: '))
+    if buscar_pedido_por_codigo(int_pedido_selecionado):
+        pedido = pedidos[int_pedido_selecionado]
+        pedido.status = 1
+        # del pedidos[int_pedido_selecionado]
+        # print("Pedido deletado!")
+        print("Pedido finalizado!")
+
 # Aplicação de exemplo disciplina POO - UFRB
 # Sistema de controle de pedidos
 # Professor Guilherme Braga Araújo
@@ -173,6 +233,7 @@ def buscar_pedido_por_codigo(int_codigo_pedido):
 estoque_produtos = {}
 pedidos = {}
 atendente = []
+garcons = []
 while True:
     # menu_principal
     opcao_escolhida = menu_principal()
@@ -198,7 +259,7 @@ while True:
             elif (opcao_escolhida == "4"):
                 pedido_listar_items()
             elif (opcao_escolhida == "5"):
-                pedido.status = 1
+                finalizar_pedido()
             else:
                 # Volta para o menu principal
                 break
